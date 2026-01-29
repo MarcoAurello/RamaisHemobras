@@ -20,9 +20,10 @@
       border-radius: 8px;
     }
 
-    h1 {
-      text-align: center;
-      color: #003366;
+    img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
     }
 
     input {
@@ -34,77 +35,48 @@
       font-size: 16px;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      word-break: break-word;
+    .card {
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-left: 5px solid #003366;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
     }
 
-    th, td {
-      text-align: left;
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-      font-size: 15px;
+    .card:hover {
+      transform: scale(1.01);
     }
 
-    th {
-      background-color: #881b1b;
-      color: white;
+    .card h3 {
+      margin: 0 0 5px;
+      font-size: 18px;
+      color: #003366;
     }
 
-    img {
-      width: 100%;
-      max-width: 100%;
-      height: auto;
+    .card p {
+      margin: 5px 0;
+      color: #333;
     }
 
     @media (max-width: 600px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
+      .card {
+        font-size: 14px;
       }
 
-      thead {
-        display: none;
-      }
-
-      tr {
-        margin-bottom: 15px;
-        background: #fff;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        padding: 10px;
-      }
-
-      td {
-        display: flex;
-        justify-content: space-between;
-        padding: 8px 10px;
-        border: none;
-        border-bottom: 1px solid #eee;
-      }
-
-      td::before {
-        content: attr(data-label);
-        font-weight: bold;
-        color: #333;
+      input {
+        font-size: 14px;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="topo.png">
+    <img src="topo.png" alt="Topo Hemobrás">
     <input type="text" id="search" placeholder="Buscar por nome ou setor...">
-    <table>
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Setor</th>
-          <th>Ramal</th>
-        </tr>
-      </thead>
-      <tbody id="results"></tbody>
-    </table>
+    <div id="results"></div>
   </div>
 
   <script>
@@ -1308,33 +1280,35 @@
 
 ];
 
-     function renderTable(items) {
-    const results = document.getElementById('results');
-    results.innerHTML = '';
-    items.forEach(item => {
-      const row = `<tr>
-        <td>${item.nome}</td>
-        <td>${item.setor}</td>
-        <td>${item.ramal}</td>
-      </tr>`;
-      results.innerHTML += row;
-    });
-  }
+      const searchInput = document.getElementById('search');
+    const resultsDiv = document.getElementById('results');
 
+    function renderCards(data) {
+      resultsDiv.innerHTML = '';
+      data.forEach(item => {
+        const card = `
+          <div class="card">
+            <h3>${item.nome}</h3>
+            <p><strong>Setor:</strong> ${item.setor}</p>
+            <p><strong>Ramal:</strong> ${item.ramal}</p>
+          </div>
+        `;
+        resultsDiv.innerHTML += card;
+      });
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
-    renderTable(allData); // exibe tudo inicialmente
+      renderCards(allData);
 
-    const searchInput = document.getElementById('search');
-    searchInput.addEventListener('input', () => {
-      const term = searchInput.value.toLowerCase();
-      const filtered = allData.filter(item =>
-        item.nome.toLowerCase().includes(term) ||
-        item.setor.toLowerCase().includes(term)
-      );
-      renderTable(filtered);
+      searchInput.addEventListener('input', () => {
+        const term = searchInput.value.toLowerCase();
+        const filtered = allData.filter(item =>
+          item.nome.toLowerCase().includes(term) ||
+          item.setor.toLowerCase().includes(term)
+        );
+        renderCards(filtered);
+      });
     });
-  });
   </script>
 </body>
 </html>
